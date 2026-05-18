@@ -1,0 +1,38 @@
+{"file":".trellis/spec/guides/index.md","reason":"Cross-layer and code-reuse thinking guide for bootstrap work"}
+{"file":".trellis/spec/server/backend/index.md","reason":"Server application structure and implementation rules"}
+{"file":".trellis/spec/server/backend/directory-structure.md","reason":"Server folder and entrypoint layout"}
+{"file":".trellis/spec/server/backend/quality-guidelines.md","reason":"Server code quality constraints"}
+{"file":".trellis/spec/server/backend/error-handling.md","reason":"Server error-handling expectations"}
+{"file":".trellis/spec/server/backend/logging-guidelines.md","reason":"Server logging boundaries"}
+{"file":".trellis/spec/server/backend/database-guidelines.md","reason":"Server persistence boundary rules"}
+{"file":".trellis/spec/web/frontend/index.md","reason":"Web app structure and UI conventions"}
+{"file":".trellis/spec/web/frontend/directory-structure.md","reason":"Web folder and feature layout"}
+{"file":".trellis/spec/web/frontend/component-guidelines.md","reason":"Web component composition rules"}
+{"file":".trellis/spec/web/frontend/hook-guidelines.md","reason":"Web composable and data fetching patterns"}
+{"file":".trellis/spec/web/frontend/state-management.md","reason":"Web client state boundaries"}
+{"file":".trellis/spec/web/frontend/quality-guidelines.md","reason":"Web code quality constraints"}
+{"file":".trellis/spec/web/frontend/type-safety.md","reason":"Web runtime validation and type rules"}
+{"file":".trellis/spec/config/backend/index.md","reason":"Config package conventions for env loading"}
+{"file":".trellis/spec/config/backend/directory-structure.md","reason":"Config package minimal file layout"}
+{"file":".trellis/spec/config/backend/quality-guidelines.md","reason":"Config code quality constraints"}
+{"file":".trellis/spec/config/backend/error-handling.md","reason":"Config parse failure behavior"}
+{"file":".trellis/spec/config/backend/logging-guidelines.md","reason":"Config logging boundaries"}
+{"file":".trellis/spec/config/backend/database-guidelines.md","reason":"Config package must stay out of persistence"}
+{"file":".trellis/spec/core/backend/index.md","reason":"Core package conventions for pure logic"}
+{"file":".trellis/spec/core/backend/directory-structure.md","reason":"Core package layout for shared logic"}
+{"file":".trellis/spec/core/backend/quality-guidelines.md","reason":"Core package purity rules"}
+{"file":".trellis/spec/core/backend/error-handling.md","reason":"Core domain error boundaries"}
+{"file":".trellis/spec/core/backend/logging-guidelines.md","reason":"Core package should not log"}
+{"file":".trellis/spec/core/backend/database-guidelines.md","reason":"Core package should not touch persistence"}
+{"file":".trellis/spec/shared/backend/index.md","reason":"Shared contract package conventions"}
+{"file":".trellis/spec/shared/backend/directory-structure.md","reason":"Shared schema and constants layout"}
+{"file":".trellis/spec/shared/backend/quality-guidelines.md","reason":"Shared contract quality rules"}
+{"file":".trellis/spec/shared/backend/error-handling.md","reason":"Shared validation and boundary rules"}
+{"file":".trellis/spec/shared/backend/logging-guidelines.md","reason":"Shared package should not log"}
+{"file":".trellis/spec/shared/backend/database-guidelines.md","reason":"Shared package should stay DB-free"}
+{"file":".trellis/spec/db/backend/index.md","reason":"DB package conventions and repository boundary"}
+{"file":".trellis/spec/db/backend/directory-structure.md","reason":"DB package layout"}
+{"file":".trellis/spec/db/backend/quality-guidelines.md","reason":"DB persistence quality rules"}
+{"file":".trellis/spec/db/backend/error-handling.md","reason":"DB repository error translation"}
+{"file":".trellis/spec/db/backend/logging-guidelines.md","reason":"DB logging boundaries"}
+{"file":".trellis/spec/db/backend/database-guidelines.md","reason":"DB query and migration conventions"}
