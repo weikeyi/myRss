@@ -9,6 +9,8 @@
     "dev:server": "pnpm --filter @myrss/server dev",
     "build": "pnpm -r --filter \"./packages/**\" --filter \"./apps/**\" build",
     "typecheck": "pnpm -r --filter \"./packages/**\" --filter \"./apps/**\" typecheck",
+    "lint": "pnpm -r --if-present lint",
+    "format": "prettier --check .",
     "test": "pnpm -r --if-present test",
     "db:generate": "pnpm --filter @myrss/db prisma:generate",
     "db:migrate": "pnpm --filter @myrss/db prisma:migrate",
@@ -16,6 +18,10 @@
   },
   "devDependencies": {
     "@types/node": "^22.15.30",
+    "@eslint/js": "^9.29.0",
+    "eslint": "^9.29.0",
+    "prettier": "^3.5.3",
+    "typescript-eslint": "^8.34.1",
     "typescript": "^5.8.3"
   }
 }
