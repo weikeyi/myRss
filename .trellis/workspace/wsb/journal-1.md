@@ -73,3 +73,38 @@ Completed the runnable workspace bootstrap, added the server health shell, and m
 ### Next Steps
 
 - None - task complete
+
+
+## Session 3: 阅读列表切片收尾
+
+**Date**: 2026-05-19
+**Task**: 阅读列表切片收尾
+**Package**: server
+**Branch**: `main`
+
+### Summary
+
+完成只读文章列表/详情切片、SQLite/Prisma 种子数据和服务启动修复；补充了 Nest 显式注入规范。
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `9952714` | (see git log) |
+| `d46abfe` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
