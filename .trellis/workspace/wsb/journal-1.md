@@ -37,3 +37,39 @@ Populated .trellis/spec with project-specific guidelines and archived the bootst
 ### Next Steps
 
 - None - task complete
+
+
+## Session 2: Phase 0 bootstrap and Pinia migration
+
+**Date**: 2026-05-18
+**Task**: Phase 0 bootstrap and Pinia migration
+**Package**: server
+**Branch**: `main`
+
+### Summary
+
+Completed the runnable workspace bootstrap, added the server health shell, and migrated the web bootstrap page to Pinia for local UI state management.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `df4d242` | (see git log) |
+| `35d00bf` | (see git log) |
+| `059c7b1` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
