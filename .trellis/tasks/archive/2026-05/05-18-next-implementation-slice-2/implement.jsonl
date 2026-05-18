@@ -1,0 +1,15 @@
+{"file":".trellis/spec/server/backend/index.md","reason":"Server module and contract conventions for the article API slice."}
+{"file":".trellis/spec/server/backend/directory-structure.md","reason":"Expected Nest module layout for new articles/workspace/prisma code."}
+{"file":".trellis/spec/server/backend/database-guidelines.md","reason":"Repository and Prisma access rules for server-side persistence."}
+{"file":".trellis/spec/server/backend/error-handling.md","reason":"Typed article lookup and validation failures should follow server error conventions."}
+{"file":".trellis/spec/server/backend/quality-guidelines.md","reason":"Thin modules, explicit types, and safe server-side boundaries."}
+{"file":".trellis/spec/web/frontend/index.md","reason":"Web page and feature organization for the reading-list slice."}
+{"file":".trellis/spec/web/frontend/directory-structure.md","reason":"Route/page/component placement for articles pages and feature components."}
+{"file":".trellis/spec/web/frontend/state-management.md","reason":"Keep article list/detail server state out of Pinia and use local/URL state correctly."}
+{"file":".trellis/spec/web/frontend/type-safety.md","reason":"Shared article schemas and route param validation on the frontend."}
+{"file":".trellis/spec/web/frontend/quality-guidelines.md","reason":"Thin pages, explicit loading/error states, and feature-local composition."}
+{"file":".trellis/spec/shared/backend/index.md","reason":"Shared article contract conventions for cross-layer schemas and enums."}
+{"file":".trellis/spec/shared/backend/directory-structure.md","reason":"Shared package export and contract file organization."}
+{"file":".trellis/spec/db/backend/index.md","reason":"Prisma + SQLite persistence conventions for the seed-backed article slice."}
+{"file":".trellis/spec/db/backend/database-guidelines.md","reason":"Repository-shaped DB access and migration conventions for Prisma models."}
+{"file":".trellis/spec/config/backend/index.md","reason":"Runtime env parsing conventions for the existing SQLite default and server bootstrap."}
