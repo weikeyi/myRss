@@ -18,6 +18,13 @@ Server code should stay modular, typed, and boring. The project already leans on
 - Use clear service boundaries for orchestration.
 - Prefer pure helpers in `packages/core`.
 - Keep runtime config in `packages/config`.
+- Use explicit `@Inject()` on Nest constructors that depend on concrete providers.
+
+```ts
+constructor(@Inject(PrismaService) private readonly prisma: PrismaService) {}
+```
+
+This avoids silent `undefined` dependencies when runtime metadata is incomplete or stale.
 
 ## Testing requirements
 
@@ -31,3 +38,4 @@ Server code should stay modular, typed, and boring. The project already leans on
 - Are shared schemas reused instead of copied?
 - Are error messages specific but not leaky?
 - Is any new code doing more than one job?
+- Are Nest provider dependencies injected explicitly instead of relying on inferred metadata?
