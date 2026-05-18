@@ -1,0 +1,13 @@
+{"file":".trellis/spec/guides/index.md","reason":"Shared review guidance for reuse and cross-layer issues"}
+{"file":".trellis/spec/server/backend/index.md","reason":"Server backend review conventions"}
+{"file":".trellis/spec/server/frontend/index.md","reason":"Server package frontend review constraints"}
+{"file":".trellis/spec/web/backend/index.md","reason":"Web package backend-facing review constraints"}
+{"file":".trellis/spec/web/frontend/index.md","reason":"Web frontend review conventions"}
+{"file":".trellis/spec/config/backend/index.md","reason":"Runtime config review conventions"}
+{"file":".trellis/spec/config/frontend/index.md","reason":"Config package frontend review constraints"}
+{"file":".trellis/spec/core/backend/index.md","reason":"Core package review conventions"}
+{"file":".trellis/spec/core/frontend/index.md","reason":"Core package frontend review constraints"}
+{"file":".trellis/spec/shared/backend/index.md","reason":"Shared contract review conventions"}
+{"file":".trellis/spec/shared/frontend/index.md","reason":"Shared contract frontend review conventions"}
+{"file":".trellis/spec/db/backend/index.md","reason":"Database package review conventions"}
+{"file":".trellis/spec/db/frontend/index.md","reason":"Database package frontend review constraints"}

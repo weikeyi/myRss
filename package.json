@@ -1,0 +1,21 @@
+{
+  "name": "myrss",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@10.33.0",
+  "scripts": {
+    "dev:web": "pnpm --filter @myrss/web dev",
+    "dev:server": "pnpm --filter @myrss/server dev",
+    "build": "pnpm -r --filter \"./packages/**\" --filter \"./apps/**\" build",
+    "typecheck": "pnpm -r --filter \"./packages/**\" --filter \"./apps/**\" typecheck",
+    "test": "pnpm -r --if-present test",
+    "db:generate": "pnpm --filter @myrss/db prisma:generate",
+    "db:migrate": "pnpm --filter @myrss/db prisma:migrate",
+    "db:seed": "pnpm --filter @myrss/server seed"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.30",
+    "typescript": "^5.8.3"
+  }
+}

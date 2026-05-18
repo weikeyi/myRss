@@ -1,0 +1,13 @@
+{"file":".trellis/spec/guides/index.md","reason":"Shared thinking guides for cross-layer and reuse checks"}
+{"file":".trellis/spec/server/backend/index.md","reason":"Server backend package conventions and examples"}
+{"file":".trellis/spec/server/frontend/index.md","reason":"Server package frontend-layer conventions and constraints"}
+{"file":".trellis/spec/web/backend/index.md","reason":"Web package backend-facing conventions and constraints"}
+{"file":".trellis/spec/web/frontend/index.md","reason":"Web frontend package conventions and examples"}
+{"file":".trellis/spec/config/backend/index.md","reason":"Runtime config package conventions"}
+{"file":".trellis/spec/config/frontend/index.md","reason":"Config package frontend-layer constraints"}
+{"file":".trellis/spec/core/backend/index.md","reason":"Core package pure logic conventions"}
+{"file":".trellis/spec/core/frontend/index.md","reason":"Core package frontend-layer constraints"}
+{"file":".trellis/spec/shared/backend/index.md","reason":"Shared contract package conventions"}
+{"file":".trellis/spec/shared/frontend/index.md","reason":"Shared contract package frontend-layer conventions"}
+{"file":".trellis/spec/db/backend/index.md","reason":"Database package conventions"}
+{"file":".trellis/spec/db/frontend/index.md","reason":"Database package frontend-layer constraints"}
