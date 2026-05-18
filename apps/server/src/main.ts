@@ -8,6 +8,7 @@ import { AppModule } from "./app.module";
 
 async function bootstrap() {
   const env = loadEnv();
+  process.env.DATABASE_URL = env.DATABASE_URL;
   const app = await NestFactory.create(AppModule, {
     bufferLogs: true
   });

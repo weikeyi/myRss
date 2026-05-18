@@ -19,5 +19,11 @@ export default [
         }
       ]
     }
+  },
+  {
+    files: ["apps/server/src/**/*.ts"],
+    rules: {
+      "@typescript-eslint/consistent-type-imports": "off"
+    }
   }
 ];

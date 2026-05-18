@@ -8,9 +8,89 @@ datasource db {
 }
 
 model Workspace {
-  id        String   @id @default(cuid())
+  id        String   @id
   slug      String   @unique
   name      String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  feeds    Feed[]
+  articles Article[]
+}
+
+model Feed {
+  id          String   @id
+  workspaceId String
+  title       String
+  url         String
+  siteUrl     String?
+  enabled     Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  articles  Article[]
+  sources   ArticleSource[]
+
+  @@index([workspaceId, createdAt])
+}
+
+model Article {
+  id           String   @id
+  workspaceId  String
+  feedId       String?
+  title        String
+  originalUrl  String
+  canonicalUrl String
+  author       String?
+  summary      String?
+  status       String   @default("ready")
+  readState    String   @default("unread")
+  favorite     Boolean  @default(false)
+  language     String?
+  publishedAt  DateTime?
+  importedAt   DateTime @default(now())
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  feed      Feed?     @relation(fields: [feedId], references: [id], onDelete: SetNull)
+  content   ArticleContent?
+  sources   ArticleSource[]
+
+  @@index([workspaceId, importedAt])
+  @@index([workspaceId, readState, importedAt])
+  @@index([workspaceId, status, importedAt])
+}
+
+model ArticleContent {
+  id              String   @id
+  workspaceId     String
+  articleId       String   @unique
+  markdownContent String?
+  textContent     String?
+  wordCount       Int?
+  fetchedAt       DateTime?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  article Article @relation(fields: [articleId], references: [id], onDelete: Cascade)
+
+  @@index([workspaceId, articleId])
+}
+
+model ArticleSource {
+  id          String   @id
+  workspaceId String
+  articleId   String
+  feedId      String?
+  sourceType  String
+  feedTitle   String?
+  originalUrl String
+  importedAt  DateTime @default(now())
+
+  article Article @relation(fields: [articleId], references: [id], onDelete: Cascade)
+  feed    Feed?   @relation(fields: [feedId], references: [id], onDelete: SetNull)
+
+  @@index([workspaceId, articleId])
 }

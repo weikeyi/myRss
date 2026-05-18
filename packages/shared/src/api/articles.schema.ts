@@ -62,8 +62,21 @@ export const ArticleDetailSchema = ArticleListItemSchema.extend({
     .nullable()
 });
 
+export const ArticleListResponseSchema = z.object({
+  data: z.array(ArticleListItemSchema),
+  meta: z.object({
+    nextCursor: z.string().nullable()
+  })
+});
+
+export const ArticleDetailResponseSchema = z.object({
+  data: ArticleDetailSchema
+});
+
 export type ArticleListQuery = z.infer<typeof ArticleListQuerySchema>;
 export type UpdateReadStateInput = z.infer<typeof UpdateReadStateSchema>;
 export type UpdateFavoriteInput = z.infer<typeof UpdateFavoriteSchema>;
 export type ArticleListItem = z.infer<typeof ArticleListItemSchema>;
 export type ArticleDetail = z.infer<typeof ArticleDetailSchema>;
+export type ArticleListResponse = z.infer<typeof ArticleListResponseSchema>;
+export type ArticleDetailResponse = z.infer<typeof ArticleDetailResponseSchema>;
