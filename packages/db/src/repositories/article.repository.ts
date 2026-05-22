@@ -1,13 +1,18 @@
+import { randomUUID } from "node:crypto";
+
 import type { Prisma, PrismaClient } from "@prisma/client";
 
 import type {
   ArticleDetail,
   ArticleListItem,
   ArticleListQuery,
-  ArticleListResponse
+  ArticleListResponse,
+  ReadState
 } from "@myrss/shared";
 
 import { DEFAULT_WORKSPACE_SLUG } from "../constants";
+
+type DbClient = PrismaClient | Prisma.TransactionClient;
 
 type ArticleListRow = Prisma.ArticleGetPayload<{
   include: {
@@ -38,8 +43,51 @@ type ArticleDetailRow = Prisma.ArticleGetPayload<{
   };
 }>;
 
+export interface CreateManualArticleInput {
+  workspaceId: string;
+  originalUrl: string;
+  canonicalUrl: string;
+  canonicalUrlHash: string;
+}
+
+export interface ArticleFetchTarget {
+  id: string;
+  title: string;
+  originalUrl: string;
+  canonicalUrl: string;
+}
+
+export interface SaveArticleFulltextInput {
+  workspaceId: string;
+  articleId: string;
+  title?: string | null;
+  author?: string | null;
+  summary?: string | null;
+  markdownContent?: string | null;
+  textContent?: string | null;
+  wordCount?: number | null;
+  fetchedAt: Date;
+}
+
 function toIsoString(value: Date | null | undefined) {
   return value ? value.toISOString() : null;
+}
+
+function createId(prefix: string) {
+  return `${prefix}_${randomUUID()}`;
+}
+
+async function getDefaultWorkspaceId(prisma: DbClient) {
+  const workspace = await prisma.workspace.findUnique({
+    where: {
+      slug: DEFAULT_WORKSPACE_SLUG
+    },
+    select: {
+      id: true
+    }
+  });
+
+  return workspace?.id ?? null;
 }
 
 function mapListItem(article: ArticleListRow): ArticleListItem {
@@ -105,19 +153,12 @@ function mapDetailItem(article: ArticleDetailRow): ArticleDetail {
 }
 
 export async function listArticles(
-  prisma: PrismaClient,
+  prisma: DbClient,
   query: ArticleListQuery
 ): Promise<ArticleListResponse> {
-  const workspace = await prisma.workspace.findUnique({
-    where: {
-      slug: DEFAULT_WORKSPACE_SLUG
-    },
-    select: {
-      id: true
-    }
-  });
+  const workspaceId = await getDefaultWorkspaceId(prisma);
 
-  if (!workspace) {
+  if (!workspaceId) {
     return {
       data: [],
       meta: {
@@ -127,7 +168,7 @@ export async function listArticles(
   }
 
   const where: Prisma.ArticleWhereInput = {
-    workspaceId: workspace.id
+    workspaceId
   };
 
   if (query.status) {
@@ -167,6 +208,14 @@ export async function listArticles(
         importedAt: "desc"
       }
     ],
+    ...(query.cursor
+      ? {
+          cursor: {
+            id: query.cursor
+          },
+          skip: 1
+        }
+      : {}),
     take: query.limit + 1,
     include: {
       feed: {
@@ -195,26 +244,27 @@ export async function listArticles(
 }
 
 export async function getArticleDetail(
-  prisma: PrismaClient,
+  prisma: DbClient,
   articleId: string
 ): Promise<ArticleDetail | null> {
-  const workspace = await prisma.workspace.findUnique({
-    where: {
-      slug: DEFAULT_WORKSPACE_SLUG
-    },
-    select: {
-      id: true
-    }
-  });
+  const workspaceId = await getDefaultWorkspaceId(prisma);
 
-  if (!workspace) {
+  if (!workspaceId) {
     return null;
   }
 
+  return getArticleDetailByWorkspace(prisma, workspaceId, articleId);
+}
+
+export async function getArticleDetailByWorkspace(
+  prisma: DbClient,
+  workspaceId: string,
+  articleId: string
+): Promise<ArticleDetail | null> {
   const article = await prisma.article.findFirst({
     where: {
       id: articleId,
-      workspaceId: workspace.id
+      workspaceId
     },
     include: {
       feed: {
@@ -229,4 +279,168 @@ export async function getArticleDetail(
   });
 
   return article ? mapDetailItem(article) : null;
+}
+
+export async function updateArticleReadState(
+  prisma: DbClient,
+  workspaceId: string,
+  articleId: string,
+  readState: ReadState
+): Promise<ArticleDetail | null> {
+  const updated = await prisma.article.updateMany({
+    where: {
+      id: articleId,
+      workspaceId
+    },
+    data: {
+      readState
+    }
+  });
+
+  if (updated.count !== 1) {
+    return null;
+  }
+
+  return getArticleDetailByWorkspace(prisma, workspaceId, articleId);
+}
+
+export async function updateArticleFavorite(
+  prisma: DbClient,
+  workspaceId: string,
+  articleId: string,
+  favorite: boolean
+): Promise<ArticleDetail | null> {
+  const updated = await prisma.article.updateMany({
+    where: {
+      id: articleId,
+      workspaceId
+    },
+    data: {
+      favorite
+    }
+  });
+
+  if (updated.count !== 1) {
+    return null;
+  }
+
+  return getArticleDetailByWorkspace(prisma, workspaceId, articleId);
+}
+
+export async function createManualArticle(
+  prisma: DbClient,
+  input: CreateManualArticleInput
+): Promise<ArticleDetail> {
+  const existing = await prisma.article.findFirst({
+    where: {
+      workspaceId: input.workspaceId,
+      canonicalUrlHash: input.canonicalUrlHash
+    },
+    select: {
+      id: true
+    }
+  });
+
+  if (existing) {
+    const article = await getArticleDetailByWorkspace(
+      prisma,
+      input.workspaceId,
+      existing.id
+    );
+
+    if (article) {
+      return article;
+    }
+  }
+
+  const now = new Date();
+  const articleId = createId("article");
+
+  await prisma.article.create({
+    data: {
+      id: articleId,
+      workspaceId: input.workspaceId,
+      title: input.canonicalUrl,
+      originalUrl: input.originalUrl,
+      canonicalUrl: input.canonicalUrl,
+      canonicalUrlHash: input.canonicalUrlHash,
+      status: "queued",
+      importedAt: now,
+      sources: {
+        create: {
+          id: createId("source"),
+          workspaceId: input.workspaceId,
+          sourceType: "manual_url",
+          originalUrl: input.originalUrl,
+          importedAt: now
+        }
+      }
+    }
+  });
+
+  const article = await getArticleDetailByWorkspace(prisma, input.workspaceId, articleId);
+
+  if (!article) {
+    throw new Error("Failed to create manual article");
+  }
+
+  return article;
+}
+
+export async function getArticleFetchTarget(
+  prisma: DbClient,
+  workspaceId: string,
+  articleId: string
+): Promise<ArticleFetchTarget | null> {
+  return prisma.article.findFirst({
+    where: {
+      id: articleId,
+      workspaceId
+    },
+    select: {
+      id: true,
+      title: true,
+      originalUrl: true,
+      canonicalUrl: true
+    }
+  });
+}
+
+export async function saveArticleFulltext(
+  prisma: DbClient,
+  input: SaveArticleFulltextInput
+) {
+  await prisma.articleContent.upsert({
+    where: {
+      articleId: input.articleId
+    },
+    update: {
+      workspaceId: input.workspaceId,
+      markdownContent: input.markdownContent ?? null,
+      textContent: input.textContent ?? null,
+      wordCount: input.wordCount ?? null,
+      fetchedAt: input.fetchedAt
+    },
+    create: {
+      id: createId("content"),
+      workspaceId: input.workspaceId,
+      articleId: input.articleId,
+      markdownContent: input.markdownContent ?? null,
+      textContent: input.textContent ?? null,
+      wordCount: input.wordCount ?? null,
+      fetchedAt: input.fetchedAt
+    }
+  });
+
+  await prisma.article.updateMany({
+    where: {
+      id: input.articleId,
+      workspaceId: input.workspaceId
+    },
+    data: {
+      ...(input.title ? { title: input.title } : {}),
+      ...(input.author ? { author: input.author } : {}),
+      ...(input.summary ? { summary: input.summary } : {})
+    }
+  });
 }

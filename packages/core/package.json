@@ -10,6 +10,9 @@
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "lint": "eslint \"src/**/*.ts\""
   },
+  "dependencies": {
+    "@myrss/shared": "workspace:*"
+  },
   "devDependencies": {
     "typescript": "^5.8.3"
   }

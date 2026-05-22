@@ -7,6 +7,7 @@
   "scripts": {
     "dev:web": "pnpm --filter @myrss/web dev",
     "dev:server": "pnpm --filter @myrss/server dev",
+    "dev:worker": "pnpm --filter @myrss/server dev:worker",
     "build": "pnpm -r --filter \"./packages/**\" --filter \"./apps/**\" build",
     "typecheck": "pnpm -r --filter \"./packages/**\" --filter \"./apps/**\" typecheck",
     "lint": "pnpm -r --if-present lint",

@@ -14,8 +14,11 @@ model Workspace {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  feeds    Feed[]
-  articles Article[]
+  feeds           Feed[]
+  articles        Article[]
+  workflowConfigs  WorkflowConfig[]
+  pipelineRuns     PipelineRun[]
+  jobs             Job[]
 }
 
 model Feed {
@@ -42,6 +45,7 @@ model Article {
   title        String
   originalUrl  String
   canonicalUrl String
+  canonicalUrlHash String?
   author       String?
   summary      String?
   status       String   @default("ready")
@@ -57,10 +61,12 @@ model Article {
   feed      Feed?     @relation(fields: [feedId], references: [id], onDelete: SetNull)
   content   ArticleContent?
   sources   ArticleSource[]
+  pipelineRuns PipelineRun[]
 
   @@index([workspaceId, importedAt])
   @@index([workspaceId, readState, importedAt])
   @@index([workspaceId, status, importedAt])
+  @@unique([workspaceId, canonicalUrlHash])
 }
 
 model ArticleContent {
@@ -93,4 +99,114 @@ model ArticleSource {
   feed    Feed?   @relation(fields: [feedId], references: [id], onDelete: SetNull)
 
   @@index([workspaceId, articleId])
+}
+
+model WorkflowConfig {
+  id          String   @id @default(cuid())
+  workspaceId String
+  name        String
+  description String?
+  version     Int      @default(1)
+  enabled     Boolean  @default(true)
+  isDefault   Boolean  @default(false)
+  definitionJson Json
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  workspace   Workspace      @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  pipelineRuns PipelineRun[]
+
+  @@unique([workspaceId, name])
+  @@index([workspaceId, isDefault])
+}
+
+model PipelineRun {
+  id          String   @id @default(cuid())
+  workspaceId String
+  articleId   String
+  workflowConfigId String?
+  workflowVersion Int
+  workflowSnapshotJson Json
+  trigger     String
+  status      String   @default("pending")
+  currentStepKey String?
+  errorCode   String?
+  errorMessage String?
+  startedAt   DateTime?
+  finishedAt  DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  workspace      Workspace       @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  article        Article         @relation(fields: [articleId], references: [id], onDelete: Cascade)
+  workflowConfig WorkflowConfig? @relation(fields: [workflowConfigId], references: [id], onDelete: SetNull)
+  steps          PipelineStepRun[]
+  jobs           Job[]
+
+  @@index([workspaceId, articleId, createdAt])
+  @@index([workspaceId, status, createdAt])
+  @@index([workspaceId, currentStepKey])
+}
+
+model PipelineStepRun {
+  id          String   @id @default(cuid())
+  workspaceId String
+  pipelineRunId String
+  articleId   String
+  stepKey     String
+  stepType    String
+  stepIndex   Int
+  status      String   @default("pending")
+  attempts    Int      @default(0)
+  maxAttempts Int      @default(1)
+  required    Boolean  @default(true)
+  inputJson   Json?
+  outputJson  Json?
+  errorCode   String?
+  errorMessage String?
+  skippedReason String?
+  startedAt   DateTime?
+  finishedAt  DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  pipelineRun PipelineRun @relation(fields: [pipelineRunId], references: [id], onDelete: Cascade)
+
+  @@unique([pipelineRunId, stepKey])
+  @@index([workspaceId, articleId])
+  @@index([workspaceId, status, updatedAt])
+}
+
+model Job {
+  id          String   @id @default(cuid())
+  workspaceId String
+  type        String
+  status      String   @default("pending")
+  priority    Int      @default(0)
+  payloadJson Json
+  dedupeKey   String?
+  runAfter    DateTime @default(now())
+  attempts    Int      @default(0)
+  maxAttempts Int      @default(3)
+  lockedAt    DateTime?
+  lockedBy    String?
+  lockVersion Int      @default(0)
+  heartbeatAt DateTime?
+  lastErrorCode    String?
+  lastErrorMessage String?
+  pipelineRunId     String?
+  pipelineStepRunId String?
+  startedAt   DateTime?
+  finishedAt  DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  workspace   Workspace    @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  pipelineRun PipelineRun?  @relation(fields: [pipelineRunId], references: [id], onDelete: SetNull)
+
+  @@unique([workspaceId, dedupeKey])
+  @@index([status, runAfter, priority])
+  @@index([lockedAt])
+  @@index([workspaceId, status, createdAt])
+  @@index([workspaceId, pipelineRunId])
 }

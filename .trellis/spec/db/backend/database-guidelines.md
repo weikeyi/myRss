@@ -14,6 +14,10 @@ The DB package is expected to use Prisma with SQLite. The architecture docs alre
 
 - Keep Prisma schema and migrations in the DB package.
 - Treat schema changes as part of the package lifecycle.
+- Keep local SQLite initialization schema-driven. Do not duplicate `schema.prisma`
+  as hand-written `CREATE TABLE` SQL in helper scripts; use Prisma commands such
+  as `db push` for development database sync so repository types and runtime
+  tables do not drift.
 
 ## Naming conventions
 

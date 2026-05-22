@@ -13,6 +13,7 @@ export async function apiRequest(path: string, options?: RequestInit) {
     ...options,
     headers: {
       accept: "application/json",
+      ...(options?.body ? { "content-type": "application/json" } : {}),
       ...(options?.headers ?? {})
     }
   });

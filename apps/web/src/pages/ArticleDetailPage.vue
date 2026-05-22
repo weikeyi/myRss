@@ -53,7 +53,12 @@ watch(articleId, loadArticle);
     <section class="panel">
       <p v-if="loading">Loading article...</p>
       <p v-else-if="errorMessage" class="error">{{ errorMessage }}</p>
-      <ArticleDetailShell v-else-if="article" :article="article" />
+      <ArticleDetailShell
+        v-else-if="article"
+        :article="article"
+        @article-updated="article = $event"
+        @pipeline-updated="loadArticle"
+      />
     </section>
   </main>
 </template>

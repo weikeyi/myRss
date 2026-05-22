@@ -18,6 +18,10 @@ export const UpdateFavoriteSchema = z.object({
   favorite: z.boolean()
 });
 
+export const CreateManualArticleSchema = z.object({
+  url: z.string().url()
+});
+
 export const ArticleSourceSchema = z.object({
   id: z.string(),
   sourceType: z.string(),
@@ -76,6 +80,7 @@ export const ArticleDetailResponseSchema = z.object({
 export type ArticleListQuery = z.infer<typeof ArticleListQuerySchema>;
 export type UpdateReadStateInput = z.infer<typeof UpdateReadStateSchema>;
 export type UpdateFavoriteInput = z.infer<typeof UpdateFavoriteSchema>;
+export type CreateManualArticleInput = z.infer<typeof CreateManualArticleSchema>;
 export type ArticleListItem = z.infer<typeof ArticleListItemSchema>;
 export type ArticleDetail = z.infer<typeof ArticleDetailSchema>;
 export type ArticleListResponse = z.infer<typeof ArticleListResponseSchema>;

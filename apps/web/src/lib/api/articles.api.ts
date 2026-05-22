@@ -3,7 +3,8 @@ import {
   ArticleListResponseSchema,
   type ArticleDetail,
   type ArticleListQuery,
-  type ArticleListResponse
+  type ArticleListResponse,
+  type ReadState
 } from "@myrss/shared";
 
 import { apiRequest } from "./http";
@@ -48,6 +49,42 @@ export async function getArticles(
 export async function getArticle(articleId: string): Promise<ArticleDetail> {
   const payload = await apiRequest(
     `/api/v1/articles/${encodeURIComponent(articleId)}`
+  );
+  return ArticleDetailResponseSchema.parse(payload).data;
+}
+
+export async function createManualArticle(url: string): Promise<ArticleDetail> {
+  const payload = await apiRequest("/api/v1/articles/manual", {
+    method: "POST",
+    body: JSON.stringify({ url })
+  });
+  return ArticleDetailResponseSchema.parse(payload).data;
+}
+
+export async function updateArticleReadState(
+  articleId: string,
+  readState: ReadState
+): Promise<ArticleDetail> {
+  const payload = await apiRequest(
+    `/api/v1/articles/${encodeURIComponent(articleId)}/read-state`,
+    {
+      method: "PATCH",
+      body: JSON.stringify({ readState })
+    }
+  );
+  return ArticleDetailResponseSchema.parse(payload).data;
+}
+
+export async function updateArticleFavorite(
+  articleId: string,
+  favorite: boolean
+): Promise<ArticleDetail> {
+  const payload = await apiRequest(
+    `/api/v1/articles/${encodeURIComponent(articleId)}/favorite`,
+    {
+      method: "PATCH",
+      body: JSON.stringify({ favorite })
+    }
   );
   return ArticleDetailResponseSchema.parse(payload).data;
 }
